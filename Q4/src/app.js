@@ -9,7 +9,7 @@ try {
     const session = JSON.parse(raw);   
     
     if (
-        typeof session.userID != "string" || session.userID.trim() == ""||
+        typeof session.userID != "string" || session.userId.trim() == ""||
         typeof session.role != "string" || session.role.trim() == ""||
         typeof session.displayName != "string" || session.displayName.trim() == ""
     ){
@@ -49,7 +49,7 @@ function sanitizeSearchQuery(input) {
     input = input.trim();
     // Requirements:
     //   - Allow only letters, digits, spaces, hyphens, underscores
-    let sanitized = input.replace(/["^a-zA-Z0-9 _-]/g, "");
+    let sanitized = input.replace(/[^a-zA-Z0-9 _-]/g, "");
     //   - Max 40 characters
     //   - Return null if the result is empty after sanitization
     return sanitized.substring(0,40);   
@@ -57,8 +57,9 @@ function sanitizeSearchQuery(input) {
 
 function performSearch(query) {
     const sanitized = sanitizeSearchQuery(query);
+    if (sanitized == null) return; 
     const label = document.getElementById("search-label");
-    label.innerHTML = "Showing results for: " + sanitized;  // UNSAFE
+    label.textContent = "Showing results for: " + sanitized;  
 }
 
 
