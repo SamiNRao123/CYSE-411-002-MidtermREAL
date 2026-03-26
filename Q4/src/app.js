@@ -4,9 +4,21 @@
 
 
 function loadSession() {
+try {
     const raw = sessionStorage.getItem("session");
-    const session = JSON.parse(raw);          // No try/catch
-    return session;                            // No field validation
+    const session = JSON.parse(raw);   
+    
+    if (
+        typeof session.userID != "string" || session.userID.trim() == ""||
+        typeof session.role != "string" || session.role.trim() == ""||
+        typeof session.displayName != "string" || session.displayName.trim() == ""
+    ){
+        return null
+    }
+    return session;                            
+} catch (err) {
+    return null;
+}
 }
 
 
