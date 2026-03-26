@@ -85,13 +85,35 @@ function renderIncidents(incidents) {
     const container = document.getElementById("incident-list");
     container.innerHTML = "";                  // Clear previous results
 
+    if (!Array.isArray(incidents)){
+        const errormsg = document.createElement("p");
+        errormsg.textContent = "there has been an error: could not load incidents.";
+        container.appendChild(errormsg);
+        return ;
+
+    }
+
     incidents.forEach(function (incident) {
+       
+        
+        if (
+            typeof incident.title != "string" || incident.title.trim() == ""||
+            !ACCEPTED_SEVERITIES.includes(incident.severity)
+        ){
+            console.warn("going to skip this invalid incident", incident);
+            return;
+        }
+        
+        
         const item = document.createElement("li");
-        // UNSAFE – directly inserts API response as HTML
-        item.innerHTML =
-            "<strong>" + incident.title + "</strong>" +
-            " <span class='severity severity-" + incident.severity + "'>" +
-            incident.severity + "</span>";
+        const title = document.createElement("strong");
+        title.textContent = incident.title;
+
+        const badge = document.createElement("span");
+        badge.textContent = incident.severity;
+
+        item.appendChild(title);
+        item.appendChild(badge);
         container.appendChild(item);
     });
 }
