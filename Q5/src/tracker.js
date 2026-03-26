@@ -21,9 +21,20 @@ let currentFilter = "all";
 
 
 function loadDashboardState() {
+    try{
     const raw   = localStorage.getItem("dashboardState");
-    const state = JSON.parse(raw);             // No try/catch
-    currentFilter = state.filter;              // No enum validation
+    const state = JSON.parse(raw);  
+
+    if (ACCEPTED_FILTERS.includes(state.filter)){
+        currentFilter = state.filter
+    } else {
+        currentFilter = "all";
+    }
+    } catch (err) {
+        currentFilter = "all"
+
+    }
+         
     applyFilter(currentFilter);
 }
 
@@ -37,7 +48,13 @@ function loadDashboardState() {
 
 function saveDashboardState() {
     const filterInput = document.getElementById("filter-select");
-    const filter      = filterInput.value;    // Not validated before storing
+    const filter      = filterInput.value;  
+    
+    if (!ACCEPTED_FILTERS.includes(filter)){
+        currentFilter = "all";
+        return; 
+    }
+
     localStorage.setItem("dashboardState", JSON.stringify({ filter: filter }));
     currentFilter = filter;
 }
